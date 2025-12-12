@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AlertCircle } from 'lucide-react';
 
 export const CostOfInaction: React.FC = () => {
   const [selectedLosses, setSelectedLosses] = useState<number[]>([]);
+  const [displayValue, setDisplayValue] = useState(0);
 
   const options = [
     { id: 1, label: "Упущенная прибыль из-за апатии (в месяц)", value: 500000 },
@@ -19,10 +20,34 @@ export const CostOfInaction: React.FC = () => {
     }
   };
 
-  const totalLoss = selectedLosses.reduce((acc, currentId) => {
+  const targetValue = selectedLosses.reduce((acc, currentId) => {
     const option = options.find(opt => opt.id === currentId);
     return acc + (option ? option.value : 0);
   }, 0);
+
+  // Animation logic for the counter
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    const duration = 1000; // 1 second animation
+    const startValue = displayValue;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      
+      // Easing function (easeOutExpo)
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      
+      const current = Math.floor(startValue + (targetValue - startValue) * easeProgress);
+      setDisplayValue(current);
+
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+
+    window.requestAnimationFrame(step);
+  }, [targetValue]);
 
   return (
     <section className="py-24 bg-neutral-950 border-t border-b border-white/5">
@@ -45,19 +70,24 @@ export const CostOfInaction: React.FC = () => {
                 }`}
               >
                 <span className="text-sm">{option.label}</span>
-                <div className={`w-4 h-4 rounded-full border ${selectedLosses.includes(option.id) ? 'bg-white border-white' : 'border-neutral-600'}`}></div>
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all ${selectedLosses.includes(option.id) ? 'bg-white border-white' : 'border-neutral-600'}`}>
+                    {selectedLosses.includes(option.id) && <div className="w-2 h-2 bg-black rounded-full" />}
+                </div>
               </div>
             ))}
           </div>
 
-          <div className="bg-neutral-900 p-8 rounded-sm text-center border border-white/5 shadow-2xl shadow-black">
-            <h3 className="text-neutral-500 text-sm uppercase tracking-widest mb-4">Цена бездействия</h3>
-            <div className="text-4xl md:text-5xl font-serif text-rose-500 mb-2">
-              {totalLoss.toLocaleString('ru-RU')} ₽
+          <div className="bg-neutral-900 p-8 rounded-sm text-center border border-white/5 shadow-2xl shadow-black relative overflow-hidden">
+             {/* Subtle glow behind the number */}
+            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-rose-900/20 blur-3xl rounded-full transition-opacity duration-500 ${targetValue > 0 ? 'opacity-100' : 'opacity-0'}`}></div>
+
+            <h3 className="text-neutral-500 text-sm uppercase tracking-widest mb-4 relative z-10">Цена бездействия</h3>
+            <div className="text-4xl md:text-5xl font-serif text-rose-500 mb-2 relative z-10 tabular-nums">
+              {displayValue.toLocaleString('ru-RU')} ₽
             </div>
-            <p className="text-xs text-neutral-600 mb-8">Возможные потери в ближайший год</p>
+            <p className="text-xs text-neutral-600 mb-8 relative z-10">Возможные потери в ближайший год</p>
             
-            <div className="bg-neutral-950 p-4 border border-white/10 text-left">
+            <div className="bg-neutral-950 p-4 border border-white/10 text-left relative z-10">
               <div className="flex gap-3">
                  <AlertCircle className="text-white w-5 h-5 flex-shrink-0" />
                  <p className="text-sm text-neutral-300">

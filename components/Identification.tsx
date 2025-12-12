@@ -52,9 +52,9 @@ export const Identification: React.FC = () => {
           {/* Layer 2: The Void (Right side, revealed) */}
           <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center">
              <img 
-               src="https://picsum.photos/1200/800?grayscale&blur=2" 
+               src="https://images.unsplash.com/photo-1504333638930-c8787321eee0?q=80&w=1200&auto=format&fit=crop" 
                alt="Inner Void" 
-               className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-soft-light"
+               className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-color-dodge"
              />
              <div className="relative z-10 text-center p-8 max-w-md">
                 <h3 className="text-2xl text-rose-500/80 font-serif italic mb-6">Симптомы распада</h3>
@@ -85,9 +85,9 @@ export const Identification: React.FC = () => {
             style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
           >
             <img 
-               src="https://picsum.photos/1200/801?grayscale" 
+               src="https://images.unsplash.com/photo-1549490349-8643362247b5?q=80&w=1200&auto=format&fit=crop" 
                alt="Success Facade" 
-               className="absolute inset-0 w-full h-full object-cover opacity-10"
+               className="absolute inset-0 w-full h-full object-cover opacity-20 filter contrast-125"
              />
              <div className="relative z-10 text-center p-8 max-w-md">
                 <h3 className="text-2xl text-black font-serif mb-6">Социальная маска</h3>
